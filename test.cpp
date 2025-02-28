@@ -1,27 +1,31 @@
-#define CATCH_CONFIG_MAIN
-#include "catch2/catch_test_macros.hpp" // Incluir el archivo principal de Catch2 v3.x
+#include <catch2/catch_all.hpp>
 #include <sstream>
 #include <string>
-#include "triangulo.cpp" // Incluye el archivo del estudiante
 
-TEST_CASE("Prueba de impresión de triángulos", "[triangulo]") {
-    SECTION("Triángulo de altura 1") {
-        stringstream output;
-        streambuf* oldCout = cout.rdbuf(output.rdbuf()); // Redirigir cout a output
+// Incluir el código del estudiante (sin .cpp)
+void imprimirTriangulo(int altura);
 
-        imprimirTriangulo(1); // Llamar a la función del estudiante
-        cout.rdbuf(oldCout);  // Restaurar cout
-
+TEST_CASE("Prueba de impresión de triángulos") {
+    SECTION("Altura 1") {
+        std::stringstream output;
+        auto old_cout = std::cout.rdbuf(output.rdbuf());
+        
+        imprimirTriangulo(1);
+        std::cout.rdbuf(old_cout);
+        
         REQUIRE(output.str() == "*\n");
     }
 
-    SECTION("Triángulo de altura 3") {
-        stringstream output;
-        streambuf* oldCout = cout.rdbuf(output.rdbuf());
-
+    SECTION("Altura 3") {
+        std::stringstream output;
+        auto old_cout = std::cout.rdbuf(output.rdbuf());
+        
         imprimirTriangulo(3);
-        cout.rdbuf(oldCout);
-
+        std::cout.rdbuf(old_cout);
+        
+        REQUIRE(output.str() == "*\n**\n***\n");
+    }
+}
         REQUIRE(output.str() == "*\n**\n***\n");
     }
 
