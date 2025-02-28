@@ -1,0 +1,4 @@
+tests:
+  - name: Pruebas Catch2
+    run: cd build && ./tests -r junit -o test-results.xml
+    points: 100
