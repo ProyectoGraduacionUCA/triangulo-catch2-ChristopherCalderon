@@ -19,11 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 2: Descargar catch.hpp
-      - name: Download Catch2
+      # Paso 2: Clonar Catch2 v3.x
+      - name: Clone Catch2
         run: |
+          git clone --branch v3.x --depth 1 https://github.com/catchorg/Catch2.git
           mkdir -p include/catch2
-          wget https://github.com/catchorg/Catch2/releases/download/v3.5.1/catch.hpp -O include/catch2/catch.hpp
+          cp -r Catch2/src/catch2/* include/catch2/
 
       # Paso 3: Instalar dependencias (CMake y compilador de C++)
       - name: Install dependencies
