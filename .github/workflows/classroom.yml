@@ -1,61 +1,37 @@
-name: Autograding Tests
+name: Autograding
 
-on:
-  - push
-  - workflow_dispatch
-  - repository_dispatch
-
-permissions:
-  checks: write
-  actions: read
-  contents: read
+on: [push]
 
 jobs:
-  run-autograding-tests:
+  autograding:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-classroom[bot]'
     steps:
-      # Paso 1: Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 2: Clonar Catch2 v3.x
-      - name: Clone Catch2
-        run: |
-          git clone --branch v3.x --depth 1 https://github.com/catchorg/Catch2.git
-          mkdir -p include/catch2
-          cp -r Catch2/src/catch2/* include/catch2/
-
-      # Paso 3: Instalar dependencias (CMake y compilador de C++)
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential cmake
 
-      # Paso 4: Configurar y compilar el proyecto
-      - name: Configure and build project
+      - name: Configure project
         run: |
           mkdir build
           cd build
           cmake ..
+
+      - name: Build project
+        run: |
+          cd build
           make
 
-      # Paso 5: Ejecutar las pruebas con Catch2 y generar un archivo JUnit
       - name: Run tests
         run: |
-          ./build/tests -r junit -o test-results.xml
+          cd build
+          ./tests -r junit -o test-results.xml
 
-      # Paso 6: Subir los resultados de las pruebas como un artefacto (usando v4)
-      - name: Upload test results
+      - name: Upload results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: test-results.xml
-
-      # Paso 7: Reportar los resultados a GitHub Classroom
-      - name: Autograding Reporter
-        uses: classroom-resources/autograding-grading-reporter@v1
-        with:
-          runners: tests
-        env:
-          TESTS_RESULTS: "${{ steps.run-tests.outputs.result }}"
+          path: build/test-results.xml
