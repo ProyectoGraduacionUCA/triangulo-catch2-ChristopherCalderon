@@ -1,0 +1,54 @@
+name: Autograding Tests
+
+on:
+  - push
+  - workflow_dispatch
+  - repository_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Paso 2: Instalar dependencias (CMake y compilador de C++)
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+
+      # Paso 3: Configurar y compilar el proyecto
+      - name: Configure and build project
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+
+      # Paso 4: Ejecutar las pruebas con Catch2 y generar un archivo JUnit
+      - name: Run tests
+        run: |
+          ./build/tests -r junit -o test-results.xml
+
+      # Paso 5: Subir los resultados de las pruebas como un artefacto
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
+
+      # Paso 6: Reportar los resultados a GitHub Classroom
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        with:
+          runners: tests
+        env:
+          TESTS_RESULTS: "${{ steps.run-tests.outputs.result }}"
