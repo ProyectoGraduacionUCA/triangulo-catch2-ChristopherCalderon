@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include "catch2/catch.hpp" // Incluir catch.hpp desde la carpeta include/catch2
+#include "catch2/catch_test_macros.hpp" // Incluir el archivo principal de Catch2 v3.x
 #include <sstream>
 #include <string>
 #include "triangulo.cpp" // Incluye el archivo del estudiante
