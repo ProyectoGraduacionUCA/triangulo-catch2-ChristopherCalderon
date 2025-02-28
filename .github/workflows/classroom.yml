@@ -19,13 +19,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 2: Instalar dependencias (CMake y compilador de C++)
+      # Paso 2: Descargar catch.hpp
+      - name: Download Catch2
+        run: |
+          mkdir -p include/catch2
+          wget https://github.com/catchorg/Catch2/releases/download/v3.5.1/catch.hpp -O include/catch2/catch.hpp
+
+      # Paso 3: Instalar dependencias (CMake y compilador de C++)
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential cmake
 
-      # Paso 3: Configurar y compilar el proyecto
+      # Paso 4: Configurar y compilar el proyecto
       - name: Configure and build project
         run: |
           mkdir build
@@ -33,19 +39,19 @@ jobs:
           cmake ..
           make
 
-      # Paso 4: Ejecutar las pruebas con Catch2 y generar un archivo JUnit
+      # Paso 5: Ejecutar las pruebas con Catch2 y generar un archivo JUnit
       - name: Run tests
         run: |
           ./build/tests -r junit -o test-results.xml
 
-      # Paso 5: Subir los resultados de las pruebas como un artefacto (usando v4)
+      # Paso 6: Subir los resultados de las pruebas como un artefacto (usando v4)
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test-results.xml
 
-      # Paso 6: Reportar los resultados a GitHub Classroom
+      # Paso 7: Reportar los resultados a GitHub Classroom
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
