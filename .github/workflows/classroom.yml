@@ -38,9 +38,9 @@ jobs:
         run: |
           ./build/tests -r junit -o test-results.xml
 
-      # Paso 5: Subir los resultados de las pruebas como un artefacto
+      # Paso 5: Subir los resultados de las pruebas como un artefacto (usando v4)
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test-results.xml
